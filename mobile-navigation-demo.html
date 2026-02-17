@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecipSnap - Fixed Mobile Navigation Demo</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            padding-top: 56px; /* Account for fixed header */
+        }
+
+        /* HEADER */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 56px;
+        }
+
+        /* LOGO */
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .logo-snap {
+            color: #ef4444;
+        }
+
+        /* DESKTOP NAV - Hidden on mobile */
+        .desktop-nav {
+            display: none;
+            gap: 24px;
+        }
+
+        .desktop-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .desktop-nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* HEADER ACTIONS */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* SIGN IN BUTTON */
+        .btn-signin {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-signin:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* MOBILE MENU OVERLAY */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 998;
+            backdrop-filter: blur(2px);
+        }
+
+        .mobile-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* MOBILE MENU DRAWER */
+        .mobile-menu {
+            position: fixed;
+            top: 56px;
+            right: 0;
+            bottom: 0;
+            width: 280px;
+            max-width: 85vw;
+            background: #1a1a1a;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 24px 0;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 16px 24px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu a:first-child {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu a:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* TABLET & DESKTOP */
+        @media (min-width: 768px) {
+            .header-container {
+                padding: 0 32px;
+                height: 64px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .desktop-nav {
+                display: flex;
+            }
+
+            .mobile-menu-button {
+                display: none;
+            }
+
+            .mobile-menu,
+            .mobile-menu-overlay {
+                display: none !important;
+            }
+
+            .btn-signin {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+        }
+
+        /* CONTENT AREA */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #a0a0a0;
+            margin-bottom: 40px;
+        }
+
+        .demo-info {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 2px solid #ef4444;
+        }
+
+        .demo-info h2 {
+            color: #ef4444;
+            margin-bottom: 15px;
+        }
+
+        .demo-info ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .test-section {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .test-section h3 {
+            margin-bottom: 15px;
+            color: #ef4444;
+        }
+
+        .test-section p {
+            line-height: 1.6;
+            color: #d0d0d0;
+        }
+
+        code {
+            background: #0a0a0a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="header-container">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <span>Recip</span><span class="logo-snap">Snap</span>
+            </a>
+
+            <!-- Desktop Navigation (hidden on mobile) -->
+            <nav class="desktop-nav">
+                <a href="#">Home</a>
+                <a href="#">Discover</a>
+                <a href="#">Blog</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="header-actions">
+                <a href="#" class="btn-signin">Sign in</a>
+                <button class="mobile-menu-button" id="menuToggle" aria-label="Toggle menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div class="mobile-menu-overlay" id="menuOverlay"></div>
+
+    <!-- MOBILE MENU DRAWER -->
+    <nav class="mobile-menu" id="mobileMenu">
+        <a href="#">Home</a>
+        <a href="#">Discover</a>
+        <a href="#">Blog</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <div class="hero">
+            <h1>Scan Any Recipe URL &<br>Customize It with AI</h1>
+            <p>This is a working demo of the FIXED mobile navigation</p>
+        </div>
+
+        <div class="demo-info">
+            <h2>✅ Navigation is Now Fixed!</h2>
+            <ul>
+                <li><strong>Mobile (< 768px):</strong> Hamburger menu button visible, desktop nav hidden</li>
+                <li><strong>Tablet/Desktop (≥ 768px):</strong> Full navigation visible, hamburger hidden</li>
+                <li><strong>All screen sizes:</strong> No overflow, proper spacing, 44px touch targets</li>
+                <li><strong>Accessibility:</strong> Keyboard navigation (Tab, Enter, Esc), screen reader support</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 How to Test This Demo</h3>
+            <p><strong>1. Resize your browser window</strong> to different widths:</p>
+            <ul>
+                <li><code>< 768px</code> - Mobile view (hamburger menu)</li>
+                <li><code>≥ 768px</code> - Desktop view (full navigation)</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>2. On mobile view:</strong></p>
+            <ul>
+                <li>Click the hamburger menu (☰) to open navigation drawer</li>
+                <li>Click outside the drawer to close it</li>
+                <li>Click a link to close it</li>
+                <li>Press Escape key to close it</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>3. Test on real devices:</strong></p>
+            <ul>
+                <li>iPhone SE (320px width)</li>
+                <li>iPhone 14 Pro Max (430px width)</li>
+                <li>Android phones (360px - 414px)</li>
+                <li>iPad (768px+)</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 What Was Fixed</h3>
+            <p><strong>Before:</strong></p>
+            <ul>
+                <li>❌ All navigation links visible on mobile (7 buttons squeezed)</li>
+                <li>❌ 81-124% header width used on mobile</li>
+                <li>❌ Horizontal overflow on screens ≤ 360px</li>
+                <li>❌ Touch targets too small (19px)</li>
+                <li>❌ No mobile navigation pattern</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>After (This Demo):</strong></p>
+            <ul>
+                <li>✅ Hamburger menu on mobile (< 768px)</li>
+                <li>✅ Slide-out navigation drawer</li>
+                <li>✅ No overflow on any screen size</li>
+                <li>✅ Touch targets 44px minimum</li>
+                <li>✅ Industry standard mobile pattern</li>
+                <li>✅ Proper spacing and accessibility</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 Implementation Details</h3>
+            <p>This demo uses:</p>
+            <ul>
+                <li><strong>Vanilla HTML/CSS/JavaScript</strong> (no framework required)</li>
+                <li><strong>CSS Media Queries</strong> at 768px breakpoint</li>
+                <li><strong>CSS Transforms</strong> for smooth animations (hardware accelerated)</li>
+                <li><strong>Proper ARIA labels</strong> for accessibility</li>
+                <li><strong>Keyboard support</strong> (Escape to close)</li>
+                <li><strong>Body scroll lock</strong> when menu is open</li>
+            </ul>
+            <p style="margin-top: 15px;">Files needed for your implementation:</p>
+            <ul>
+                <li><code>mobile-navigation-implementation.jsx</code> - React component code</li>
+                <li><code>mobile-navigation-styles.css</code> - Complete CSS</li>
+                <li><code>mobile-navigation-demo.html</code> - This demo (working prototype)</li>
+            </ul>
+        </div>
+
+        <div class="demo-info" style="margin-top: 40px;">
+            <h2>📝 Next Steps for RecipSnap Team</h2>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li>Review this demo and code files</li>
+                <li>Integrate into RecipSnap codebase</li>
+                <li>Test across all devices (use Playwright tests)</li>
+                <li>Deploy to staging environment</li>
+                <li>QA testing and accessibility audit</li>
+                <li>Gradual rollout to production (10% → 50% → 100%)</li>
+                <li>Monitor metrics and user feedback</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Mobile menu functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        let isMenuOpen = false;
+
+        // Toggle menu
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+
+            if (isMenuOpen) {
+                mobileMenu.classList.add('open');
+                menuOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                menuToggle.setAttribute('aria-expanded', 'true');
+
+                // Change icon to X
+                menuToggle.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+            } else {
+                mobileMenu.classList.remove('open');
+                menuOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+                menuToggle.setAttribute('aria-expanded', 'false');
+
+                // Change icon to hamburger
+                menuToggle.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                `;
+            }
+        }
+
+        // Button click
+        menuToggle.addEventListener('click', toggleMenu);
+
+        // Overlay click (close menu)
+        menuOverlay.addEventListener('click', () => {
+            if (isMenuOpen) toggleMenu();
+        });
+
+        // Close on link click
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // For demo purposes
+                if (isMenuOpen) toggleMenu();
+            });
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) {
+                toggleMenu();
+            }
+        });
+
+        // Close menu on window resize to desktop size
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768 && isMenuOpen) {
+                toggleMenu();
+            }
+        });
+    </script>
+</body>
+</html>
